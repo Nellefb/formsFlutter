@@ -34,14 +34,15 @@ class MyCustomForm extends StatefulWidget {
 // Define a corresponding State class.
 // This class holds data related to the form.
 class MyCustomFormState extends State<MyCustomForm> {
-  String email ='';
+  String email = '';
+  String senha = '';
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
-  
+  bool _obscurePassword = true; // Controla a visibilidade da senha
+
   //chave unica para todo o app
   final formKey = GlobalKey<FormState>();
 
-  
   @override
   void initState() {
     super.initState();
@@ -63,12 +64,11 @@ class MyCustomFormState extends State<MyCustomForm> {
             height: 24,
           ),
           ElevatedButton(
-
             onPressed: () {
-            //validar form
-            //1 acessar o form e executar a validaçao
+              //validar form
+              //1 acessar o form e executar a validaçao
               bool valid = formKey.currentState!.validate();
-              if(valid){
+              if (valid) {
                 print('Email: ${emailController.text}');
                 print('Password: ${passwordController.text}');
               }
@@ -82,16 +82,18 @@ class MyCustomFormState extends State<MyCustomForm> {
 
 //antes TextField e agora textformfield
   Widget buildEmail() => TextFormField(
-    validator: (value){
-      if(value == null || value.isEmpty){
-        return 'Informe o email';
-      } 
-      return null;
-    },
-    controller: emailController,
-        onChanged: (value){
-            email = value;
-         },
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Informe o email';
+          } else if (!value.contains('@')) {
+            return 'E-mail deve conter @';
+          }
+          return null;
+        },
+        controller: emailController,
+        onChanged: (value) {
+          email = value;
+        },
         decoration: InputDecoration(
           hintText: 'name@example.com',
           labelText: 'E-mail',
@@ -107,15 +109,36 @@ class MyCustomFormState extends State<MyCustomForm> {
         keyboardType: TextInputType.emailAddress,
       );
 
-  Widget buildPassword() =>  TextField(
-        
-        controller: passwordController,
-        obscureText: true,
-        decoration: const InputDecoration(
+  Widget buildPassword() => TextFormField(
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Informe a Senha';
+          } else if (value.length < 6) {
+            return 'A senha deve ter no mínimo 6 caracteres';
+          }
+          return null;
+        },
+        obscureText: _obscurePassword, // Controla a exibição da senha
+        decoration: InputDecoration(
           hintText: 'Your Password...',
           labelText: 'Password',
-          border: OutlineInputBorder(),
-          suffixIcon: IconButton(onPressed: onPressed, icon: const Icon(Icons.remove_red_eye))
+          border: const OutlineInputBorder(),
+          suffixIcon: IconButton(
+            onPressed:
+                _togglePasswordView, // Chama a função para alternar a visibilidade da senha
+            icon: Icon(
+              _obscurePassword
+                  ? Icons.visibility
+                  : Icons.visibility_off, // Altera o ícone
+            ),
+          ),
         ),
       );
+
+  // Função para alternar a visibilidade da senha
+  void _togglePasswordView() {
+    setState(() {
+      _obscurePassword = !_obscurePassword;
+    });
+  }
 }
