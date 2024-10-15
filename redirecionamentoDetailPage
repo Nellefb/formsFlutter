@@ -33,13 +33,17 @@ class MyCustomForm extends StatefulWidget {
 
 // Define a corresponding State class.
 class MyCustomFormState extends State<MyCustomForm> {
+  String nome = '';
+  String sobrenome = '';
   String email = '';
   String senha = '';
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
+  final nomeController = TextEditingController();
+  final sobrenomeController = TextEditingController();
   bool _obscurePassword = true;
 
-  //chave unica para todo o app
+  // Chave única para todo o app
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -49,6 +53,10 @@ class MyCustomFormState extends State<MyCustomForm> {
       child: ListView(
         padding: const EdgeInsets.all(32),
         children: <Widget>[
+          buildNome(),
+          const SizedBox(height: 24),
+          buildSobrenome(),
+          const SizedBox(height: 24),
           buildEmail(),
           const SizedBox(height: 24),
           buildPassword(),
@@ -58,6 +66,8 @@ class MyCustomFormState extends State<MyCustomForm> {
               bool valid = formKey.currentState!.validate();
               if (valid) {
                 // Salvar dados
+                nome = nomeController.text;
+                sobrenome = sobrenomeController.text;
                 email = emailController.text;
                 senha = passwordController.text;
 
@@ -65,7 +75,12 @@ class MyCustomFormState extends State<MyCustomForm> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => DetailsPage(email: email, senha: senha),
+                    builder: (context) => DetailsPage(
+                      nome: nome,
+                      sobrenome: sobrenome,
+                      email: email,
+                      senha: senha,
+                    ),
                   ),
                 );
               }
@@ -76,6 +91,36 @@ class MyCustomFormState extends State<MyCustomForm> {
       ),
     );
   }
+
+  Widget buildNome() => TextFormField(
+        controller: nomeController,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Informe o Nome';
+          }
+          return null;
+        },
+        decoration: InputDecoration(
+          labelText: 'Nome',
+          border: const OutlineInputBorder(),
+          prefixIcon: const Icon(Icons.person),
+        ),
+      );
+
+  Widget buildSobrenome() => TextFormField(
+        controller: sobrenomeController,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Informe o Sobrenome';
+          }
+          return null;
+        },
+        decoration: InputDecoration(
+          labelText: 'Sobrenome',
+          border: const OutlineInputBorder(),
+          prefixIcon: const Icon(Icons.person),
+        ),
+      );
 
   Widget buildEmail() => TextFormField(
         validator: (value) {
@@ -113,8 +158,8 @@ class MyCustomFormState extends State<MyCustomForm> {
         },
         obscureText: _obscurePassword,
         decoration: InputDecoration(
-          hintText: 'Your Password...',
-          labelText: 'Password',
+          hintText: 'Sua Senha...',
+          labelText: 'Senha',
           border: const OutlineInputBorder(),
           suffixIcon: IconButton(
             onPressed: _togglePasswordView,
@@ -136,10 +181,18 @@ class MyCustomFormState extends State<MyCustomForm> {
 
 // Nova tela para exibir os dados
 class DetailsPage extends StatelessWidget {
+  final String nome;
+  final String sobrenome;
   final String email;
   final String senha;
 
-  const DetailsPage({Key? key, required this.email, required this.senha}) : super(key: key);
+  const DetailsPage({
+    Key? key,
+    required this.nome,
+    required this.sobrenome,
+    required this.email,
+    required this.senha,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -152,6 +205,10 @@ class DetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            Text('Nome: $nome', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 8),
+            Text('Sobrenome: $sobrenome', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 16),
             Text('E-mail: $email', style: TextStyle(fontSize: 18)),
             SizedBox(height: 16),
             Text('Senha: $senha', style: TextStyle(fontSize: 18)),
