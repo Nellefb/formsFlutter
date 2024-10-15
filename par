@@ -1,0 +1,23 @@
+//par
+
+import 'dart:io';
+
+void main() {
+  // Solicitar ao usuário que insira um número
+  print('Informe o RM:');
+  String? input = stdin.readLineSync();
+
+  // Tentar converter a entrada para um inteiro
+  int? rmNumber = int.tryParse(input ?? '');
+
+  if (rmNumber == null) {
+    print('O RM deve ser um número válido.');
+  } else {
+    // Verificar se o RM é par ou ímpar
+    if (rmNumber % 2 == 0) {
+      print('O RM $rmNumber é par.');
+    } else {
+      print('O RM $rmNumber é ímpar.');
+    }
+  }
+}
