@@ -1,0 +1,29 @@
+//details page
+import 'package:flutter/material.dart';
+
+class DetailsPage extends StatelessWidget {
+  final String email;
+  final String senha;
+
+  const DetailsPage({Key? key, required this.email, required this.senha}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Detalhes'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('E-mail: $email', style: TextStyle(fontSize: 18)),
+            const SizedBox(height: 16),
+            Text('Senha: $senha', style: TextStyle(fontSize: 18)),
+          ],
+        ),
+      ),
+    );
+  }
+}
